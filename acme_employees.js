@@ -167,3 +167,39 @@ const employees = [
   ---harpo
   -lucy
   */
+
+  var counter = 0;
+  var output = '';
+  function displayManagementTree(func) {
+    let tree = func;
+    if (tree['report'].length === 0) return output += tree.name + '\n';
+    else {
+      output += '-'.repeat(counter) + tree.name + '\n';
+      counter += 1;
+      tree = tree['report'];
+      if (Array.isArray(tree)) {
+        for (let i = 0; i < tree.length; i++) {
+          displayManagementTree(tree[i]);
+        }
+      } else displayManagementTree(tree);
+    }
+
+    //console.log(output);
+    return output;
+    
+    /* while (tree['report'].length !== 0) {
+      output = '-'.repeat(counter) + tree.name + '\n';
+      tree = tree['report'];
+      if (Array.isArray(tree)) {
+        counter += 1;
+        tree.forEach(element => {
+          output += '-'.repeat(counter) + element.name + '\n';
+          element['report']
+        })
+      }
+      console.log(tree);
+      console.log(tree[0]['report'])
+      console.log(output)
+      counter += 1;
+    } */
+  }
