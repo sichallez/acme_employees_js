@@ -138,7 +138,7 @@ const employees = [
   */
   spacer('');
 
-  function generateManagementTree(employeeArray) {
+  /* function generateManagementTree(employeeArray) {
     let level1 = employeeArray.filter(element => element.managerId === undefined);
     level1 = level1[0];
     const level2 = employeeArray.filter(element => element.managerId === level1.id);
@@ -153,8 +153,33 @@ const employees = [
     });
     level1['report'] = level2;  
     return level1;
+  } */
+
+  const generateManagementTree = (employeeArr) => {
+    let boss = {};
+    for(const emp of employeeArr) {
+        if(!emp.managerId) {
+            boss = emp;
+            break;
+        }
+    }
+    boss.reports = findMinions(boss, employeeArr);
+    return boss;
+  }
+
+  const findMinions = (manager, empArr) => {
+    const result = [];
+    empArr.filter(employee => employee.managerId === manager.id)
+        .forEach( person => {
+            person.reports = findMinions(person, empArr);
+            return result.push(person);
+        });
+    return result;
   }
   
+  var counter = 0;
+  var output = '';
+
   spacer('displayManagementTree')
   //given a tree of employees, generate a display which displays the hierarchy
   displayManagementTree(generateManagementTree(employees));/*
@@ -168,11 +193,14 @@ const employees = [
   -lucy
   */
 
-  var counter = 0;
-  var output = '';
+  /*
   function displayManagementTree(func) {
     let tree = func;
-    if (tree['report'].length === 0) return output += tree.name + '\n';
+    if (tree['managerId'] === 1) {
+      counter = 1;
+    }
+
+    if (tree['report'].length === 0) return output += '-'.repeat(counter) + tree.name + '\n';
     else {
       output += '-'.repeat(counter) + tree.name + '\n';
       counter += 1;
@@ -184,9 +212,12 @@ const employees = [
       } else displayManagementTree(tree);
     }
 
-    //console.log(output);
+    // console.log(output);
     return output;
-    
+  }
+
+  console.log(output); */
+
     /* while (tree['report'].length !== 0) {
       output = '-'.repeat(counter) + tree.name + '\n';
       tree = tree['report'];
@@ -202,4 +233,22 @@ const employees = [
       console.log(output)
       counter += 1;
     } */
-  }
+
+  // Solution 2
+function displayManagementTree(func) {
+  let tree = func;
+  // if (tree['managerId'] === 1) {
+  //     counter = 1;
+  //   }
+
+  let name = '-'.repeat(counter) + tree.name;
+  console.log(name);
+
+  counter += 1;
+  tree = tree['report'];
+  if (Array.isArray(tree)) {
+    for (let i = 0; i < tree.length; i++) {
+      displayManagementTree(tree[i]);
+    }
+  } else displayManagementTree(tree);
+}
